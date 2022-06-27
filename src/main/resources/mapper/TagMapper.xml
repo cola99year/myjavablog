@@ -13,16 +13,20 @@
                         where article_id = #{id}
                     )
     </select>
+
+    <!--找出前5条最热的id-->
+    <select id="selectHotTagsId" resultType="java.lang.Integer">
+        select tag_id from cola_article_tag group by tag_id order by count(*) desc limit #{limit}
+    </select>
+
     <!--最热标签-->
     <select id="selectHotTags" resultType="com.cola.colablog.pojo.Tag">
         SELECT id,tag_name
         FROM cola_tag
-        where id IN(
-            select tag_id
-            FROM cola_article_tag
-            GROUP BY tag_id
-            ORDER BY COUNT(*) DESC
-        )
-            limit #{limit}
+        where id in
+        <foreach collection="hotTagsIds" open="(" close=")" separator="," item="hotTagsId">
+                #{hotTagsId}
+        </foreach>
     </select>
+
 </mapper>

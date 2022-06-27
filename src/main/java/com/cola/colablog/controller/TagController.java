@@ -19,7 +19,7 @@ public class TagController {
 
     @GetMapping("hot")
     public Result hot(){
-        int limit = 6;
+        int limit = 5;
         return tagService.hotTag(limit);
     }
 }

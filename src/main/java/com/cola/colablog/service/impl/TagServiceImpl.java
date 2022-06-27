@@ -29,6 +29,17 @@ public class TagServiceImpl implements TagService {
         return tagVoList;
     }
 
+
+    //最火标签=该标签含有的文章最多
+    @Override
+    public Result hotTag(Integer limit){
+        //找出前5条最热的id,返回list集合传给下面
+        List<Integer> hotTagsIds = tagMapper.selectHotTagsId(limit);
+        //前5条最热的id，分别对应的标签名
+        List<Tag> hotTagsName = tagMapper.selectHotTags(hotTagsIds);
+        return Result.success(hotTagsName);
+    }
+
     private List<TagVo> copyList(List<Tag> tags){
         List<TagVo> tagVoList = new ArrayList<>();
         for(Tag tag : tags){
@@ -42,9 +53,5 @@ public class TagServiceImpl implements TagService {
         return tagVo;
     }
 
-    @Override
-    public Result hotTag(Integer limit){
-        List<Tag> tags = tagMapper.selectHotTags(limit);
-        return Result.success(tags);
-    }
+
 }

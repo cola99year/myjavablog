@@ -15,6 +15,8 @@ import java.util.List;
 public interface TagMapper extends BaseMapper<Tag> {
 
     List<Tag> findTagsByArticleId(@Param("id") Integer id);
-    List<Tag> selectHotTags(@Param("limit") Integer limit);
-
+    //找出前5条最热的id
+    List<Integer> selectHotTagsId(@Param("limit") Integer limit);
+    //前5条最热的id，分别对应的标签名
+    List<Tag> selectHotTags(@Param("hotTagsIds") List<Integer> hotTagsIds);
 }

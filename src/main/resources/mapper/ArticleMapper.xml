@@ -4,4 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cola.colablog.mapper.ArticleMapper">
 
+    <!--文章按年份和月份分组-->
+    <select id="listArchives" resultType="com.cola.colablog.dos.Archives">
+        select  FROM_UNIXTIME(create_date/1000,'%Y') as year,
+                FROM_UNIXTIME(create_date/1000,'%m') as month,
+                count(*) as count
+        from cola_article
+        group by year,month
+    </select>
 </mapper>

@@ -15,5 +15,9 @@ public interface ArticleService extends IService<Article> {
     Result listArticle(PageParams pageParam);
     //最热文章：浏览数量最多
     Result listHotArticle(Integer limit);
+    //最新的文章=创建日期最新
+    Result newArticles(int limit);
 
+    //文章按年份和月份分组
+    Result listArchives();
 }

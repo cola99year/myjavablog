@@ -3,6 +3,7 @@ package com.cola.colablog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cola.colablog.dos.Archives;
 import com.cola.colablog.mapper.ArticleMapper;
 import com.cola.colablog.pojo.Article;
 import com.cola.colablog.service.ArticleService;
@@ -59,6 +60,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<Article> articles = articleMapper.selectList(lambdaQueryWrapper);
         return Result.success(articles);
     }
+
+    //最新的文章=创建日期最新
+    @Override
+    public Result newArticles(int limit) {
+        LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.orderByDesc(Article::getCreateDate)
+                .select(Article::getId,Article::getTitle)
+                .last("limit "+limit);
+        List<Article> articles = articleMapper.selectList(lambdaQueryWrapper);
+        return Result.success(articles);
+    }
+
+    //文章按年份和月份分组
+    @Override
+    public Result listArchives() {
+        List<Archives> archivesList = articleMapper.listArchives();
+        return Result.success(archivesList);
+    }
+
 
     private List<ArticleVo> copyList(List<Article> records){
         List<ArticleVo> articleVoList = new ArrayList<>();

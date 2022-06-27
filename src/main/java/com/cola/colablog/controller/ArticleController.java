@@ -29,8 +29,18 @@ public class ArticleController {
     //最热文章，浏览数量最多的文章
     @PostMapping("hot")
     public Result hotArticle(){
-        int limit = 6;
+        int limit = 5;
         return articleService.listHotArticle(limit);
     }
-
+    //最新的文章=创建日期最新
+    @PostMapping("new")
+    public Result latestArticles(){
+        int limit = 5;
+        return articleService.newArticles(limit);
+    }
+    //文章按年份和月份分组
+    @PostMapping("listArchives")
+    public Result listArchives(){
+        return articleService.listArchives();
+    }
 }
