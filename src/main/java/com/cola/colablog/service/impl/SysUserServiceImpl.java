@@ -1,5 +1,6 @@
 package com.cola.colablog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cola.colablog.mapper.SysUserMapper;
 import com.cola.colablog.pojo.SysUser;
 import com.cola.colablog.service.SysUserService;
@@ -18,5 +19,18 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public SysUser findUserById(Integer authorId) {
         return  sysUserMapper.selectById(authorId);
+    }
+
+    //前端点击登录就去数据库找用户表查询
+    @Override
+    public SysUser findUser(String account, String password) {
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        //where过滤的封装
+        queryWrapper.eq(SysUser::getAccount,account);
+        queryWrapper.eq(SysUser::getPassword,password);
+        //要查询的字段
+        queryWrapper.select(SysUser::getAccount,SysUser::getId,SysUser::getAvatar,SysUser::getNickname);
+        queryWrapper.last("limit 1");
+        return sysUserMapper.selectOne(queryWrapper);
     }
 }

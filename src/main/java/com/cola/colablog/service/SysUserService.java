@@ -10,4 +10,6 @@ import netscape.security.Principal;
 public interface SysUserService {
 
      SysUser findUserById(Integer authorId);
+
+    SysUser findUser(String account, String password);
 }
