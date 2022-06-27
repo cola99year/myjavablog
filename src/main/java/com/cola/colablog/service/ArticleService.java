@@ -13,5 +13,7 @@ import com.cola.colablog.vo.params.PageParams;
 public interface ArticleService extends IService<Article> {
 
     Result listArticle(PageParams pageParam);
+    //最热文章：浏览数量最多
+    Result listHotArticle(Integer limit);
 
 }

@@ -49,6 +49,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return Result.success(articleVoList);
     }
 
+    //最热文章：浏览数量最多
+    @Override
+    public Result listHotArticle(Integer limit) {
+        LambdaQueryWrapper<Article> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.orderByDesc(Article::getViewCounts)
+                .select(Article::getId,Article::getTitle)
+                        .last("limit "+limit);
+        List<Article> articles = articleMapper.selectList(lambdaQueryWrapper);
+        return Result.success(articles);
+    }
+
     private List<ArticleVo> copyList(List<Article> records){
         List<ArticleVo> articleVoList = new ArrayList<>();
         for(Article article : records){

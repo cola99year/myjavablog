@@ -1,5 +1,6 @@
 package com.cola.colablog.controller;
 
+import com.cola.colablog.pojo.Article;
 import com.cola.colablog.service.ArticleService;
 import com.cola.colablog.vo.Result;
 import com.cola.colablog.vo.params.PageParams;
@@ -20,8 +21,16 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    //首页展示所有文章列表
     @PostMapping
     public Result listAllArticle(@RequestBody PageParams pageParam){
         return articleService.listArticle(pageParam);
     }
+    //最热文章，浏览数量最多的文章
+    @PostMapping("hot")
+    public Result hotArticle(){
+        int limit = 6;
+        return articleService.listHotArticle(limit);
+    }
+
 }
