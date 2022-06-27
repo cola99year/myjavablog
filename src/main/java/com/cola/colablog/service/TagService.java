@@ -1,5 +1,7 @@
 package com.cola.colablog.service;
 
+import com.cola.colablog.pojo.Tag;
+import com.cola.colablog.vo.Result;
 import com.cola.colablog.vo.TagVo;
 
 import java.util.List;
@@ -10,4 +12,5 @@ import java.util.List;
  */
 public interface TagService {
     List<TagVo> findTagsByArticleId(Integer id);
+    Result hotTag(Integer limit);
 }

@@ -3,10 +3,12 @@ package com.cola.colablog.service.impl;
 import com.cola.colablog.mapper.TagMapper;
 import com.cola.colablog.pojo.Tag;
 import com.cola.colablog.service.TagService;
+import com.cola.colablog.vo.Result;
 import com.cola.colablog.vo.TagVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +40,11 @@ public class TagServiceImpl implements TagService {
         TagVo tagVo = new TagVo();
         BeanUtils.copyProperties(tag,tagVo);
         return tagVo;
+    }
+
+    @Override
+    public Result hotTag(Integer limit){
+        List<Tag> tags = tagMapper.selectHotTags(limit);
+        return Result.success(tags);
     }
 }

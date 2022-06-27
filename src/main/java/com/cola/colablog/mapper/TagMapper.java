@@ -15,4 +15,6 @@ import java.util.List;
 public interface TagMapper extends BaseMapper<Tag> {
 
     List<Tag> findTagsByArticleId(@Param("id") Integer id);
+    List<Tag> selectHotTags(@Param("limit") Integer limit);
+
 }
