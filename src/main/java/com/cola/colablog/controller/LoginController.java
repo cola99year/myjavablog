@@ -23,7 +23,7 @@ public class LoginController{
     @PostMapping
     //用户传来的账户和密码，封装为LoginParam类
     public Result login(@RequestBody LoginParam loginParam){
-        //登录 验证用户  访问用户表，但是
+        //登录 验证用户  访问用户表
         return loginService.login(loginParam);
     }
 

@@ -69,28 +69,33 @@ public class LoginServiceImpl implements LoginService {
         return Result.success(token);
     }
 
-//    @Override
-//    public SysUser checkToken(String token) {
-//        if (StringUtils.isBlank(token)) {
-//            return null;
-//        }
-//        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
-//        if (stringObjectMap == null) {
-//            return null;
-//        }
-//        String userJson = redisTemplate.opsForValue().get("TOKEN_" + token);
-//        if (StringUtils.isBlank(userJson)) {
-//            return null;
-//        }
-//        SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
-//        return sysUser;
-//    }
-//
-//    @Override
-//    public Result logout(String token) {
-//        redisTemplate.delete("TOKEN_" + token);
-//        return Result.success(null);
-//    }
+    @Override
+    public SysUser checkToken(String token) {
+        //token若为空
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
+        //JWT解析是否成功？
+        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
+        if (stringObjectMap == null) {
+            return null;
+        }
+        //redis是否存在这个key？
+        String userJson = redisTemplate.opsForValue().get("TOKEN_" + token);
+
+        if (StringUtils.isBlank(userJson)) {
+            return null;
+        }
+        //redis的value保存有对象，不用去数据库查找。把String转成对象SysUser.class
+        SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
+        return sysUser;
+    }
+    //退出登录把token删除
+    @Override
+    public Result logout(String token) {
+        redisTemplate.delete("TOKEN_" + token);
+        return Result.success(null);
+    }
 //
 //    @Override
 //    public Result register(LoginParam loginParam) {

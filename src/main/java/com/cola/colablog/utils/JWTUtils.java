@@ -32,6 +32,11 @@ public class JWTUtils {
         return token;
     }
 
+    /**
+     * 检查token
+     * @param token 前端请求头发来的
+     * @return
+     */
     public static Map<String, Object> checkToken(String token){
         try {
             //拿到密钥来解析token，解析成功返回

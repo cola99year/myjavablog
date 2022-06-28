@@ -11,10 +11,10 @@ import com.cola.colablog.vo.params.LoginParam;
 public interface LoginService {
     //登录
     Result login(LoginParam loginParam);
+    //检查前端发来的token
+    SysUser checkToken(String token);
 
-    //SysUser checkToken(String token);
-
-    //Result logout(String token);
+    Result logout(String token);
 
     //Result register(LoginParam loginParam);
 

@@ -1,6 +1,7 @@
 package com.cola.colablog.service;
 
 import com.cola.colablog.pojo.SysUser;
+import com.cola.colablog.vo.Result;
 import netscape.security.Principal;
 
 /**
@@ -12,4 +13,6 @@ public interface SysUserService {
      SysUser findUserById(Integer authorId);
 
     SysUser findUser(String account, String password);
+
+    Result findUserByToken(String token);
 }
