@@ -29,4 +29,9 @@ public class ArticleVo {
     private String author;
     //实体类没有标签的属性，vo层可以封装，多表查询得到。
     private List<TagVo> tags;
+
+    //文章详情
+    private ArticleBodyVo body;
+    //文章分类
+    private CategoryVo category;
 }

@@ -5,10 +5,7 @@ import com.cola.colablog.service.ArticleService;
 import com.cola.colablog.vo.Result;
 import com.cola.colablog.vo.params.PageParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: cola99year
@@ -42,5 +39,11 @@ public class ArticleController {
     @PostMapping("listArchives")
     public Result listArchives(){
         return articleService.listArchives();
+    }
+    //文章详情
+    @PostMapping("view/{id}")
+    //@Cache(expire = 5 * 60 * 1000,name = "view_article")
+    public Result findArticleById(@PathVariable("id") Integer articleId){
+        return articleService.findArticleById(articleId);
     }
 }

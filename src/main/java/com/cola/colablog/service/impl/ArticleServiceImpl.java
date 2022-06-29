@@ -4,11 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cola.colablog.dos.Archives;
+import com.cola.colablog.mapper.ArticleBodyMapper;
 import com.cola.colablog.mapper.ArticleMapper;
 import com.cola.colablog.pojo.Article;
+import com.cola.colablog.pojo.ArticleBody;
 import com.cola.colablog.service.ArticleService;
+import com.cola.colablog.service.CategoryService;
 import com.cola.colablog.service.SysUserService;
 import com.cola.colablog.service.TagService;
+import com.cola.colablog.vo.ArticleBodyVo;
 import com.cola.colablog.vo.ArticleVo;
 import com.cola.colablog.vo.Result;
 import com.cola.colablog.vo.params.PageParams;
@@ -34,6 +38,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private SysUserService sysUserService;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private ArticleBodyMapper articleBodyMapper;
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
     public Result listArticle(PageParams pageParam) {
@@ -79,6 +87,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return Result.success(archivesList);
     }
 
+    //文章详情
+    @Override
+    public Result findArticleById(Integer articleId) {
+        /**
+         * 1. 根据id查询 文章信息
+         * 2. 根据bodyId和categoryid 去做关联查询
+         */
+        Article article = this.articleMapper.selectById(articleId);
+        ArticleVo articleVo = copy(article);//一篇，copy便可
+        return Result.success(articleVo);
+    }
 
     private List<ArticleVo> copyList(List<Article> records){
         List<ArticleVo> articleVoList = new ArrayList<>();
@@ -98,7 +117,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //这句仍然是单表查询
         articleVo.setAuthor(sysUserService.findUserById(article.getAuthorId()).getNickname());
         articleVo.setTags(tagService.findTagsByArticleId(article.getId()));
+
+        Integer bodyId = article.getBodyId();
+        articleVo.setBody(findArticleBodyById(bodyId));//article.getBodyId
+        Integer categoryId = article.getCategoryId();
+        //articleVo.setCategory(findCategoryById(categoryId));
+        articleVo.setCategory(categoryService.findCategoryById(categoryId));
+
         return articleVo;
+    }
+
+    private ArticleBodyVo findArticleBodyById(Integer bodyId) {
+        ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
+        ArticleBodyVo articleBodyVo = new ArticleBodyVo();
+        articleBodyVo.setContent(articleBody.getContent());
+        return articleBodyVo;
     }
 }
 

@@ -20,4 +20,7 @@ public interface ArticleService extends IService<Article> {
 
     //文章按年份和月份分组
     Result listArchives();
+
+    //文章详情
+    Result findArticleById(Integer articleId);
 }
