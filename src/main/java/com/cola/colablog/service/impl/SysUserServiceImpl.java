@@ -8,6 +8,8 @@ import com.cola.colablog.service.SysUserService;
 import com.cola.colablog.vo.ErrorCode;
 import com.cola.colablog.vo.LoginUserVo;
 import com.cola.colablog.vo.Result;
+import com.cola.colablog.vo.UserVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,21 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserMapper sysUserMapper;
     @Autowired
     private LoginService loginService;
+
+    @Override
+    public UserVo findUserVoById(Integer id) {
+        SysUser sysUser = sysUserMapper.selectById(id);
+        if (sysUser == null){
+            sysUser = new SysUser();
+            sysUser.setId(1);
+            sysUser.setAvatar("/static/img/logo.b3a48c0.png");
+            sysUser.setNickname("系统默认作者");
+        }
+        UserVo userVo  = new UserVo();
+        BeanUtils.copyProperties(sysUser,userVo);
+        userVo.setId(String.valueOf(sysUser.getId()));
+        return userVo;
+    }
 
     @Override
     public SysUser findUserById(Integer authorId) {

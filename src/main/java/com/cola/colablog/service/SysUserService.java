@@ -2,6 +2,7 @@ package com.cola.colablog.service;
 
 import com.cola.colablog.pojo.SysUser;
 import com.cola.colablog.vo.Result;
+import com.cola.colablog.vo.UserVo;
 import netscape.security.Principal;
 
 /**
@@ -19,4 +20,6 @@ public interface SysUserService {
     SysUser findUserByAccount(String account);
 
     void save(SysUser sysUser);
+
+    UserVo findUserVoById(Integer authorId);
 }

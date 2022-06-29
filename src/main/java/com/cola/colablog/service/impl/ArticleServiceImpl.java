@@ -8,6 +8,7 @@ import com.cola.colablog.mapper.ArticleBodyMapper;
 import com.cola.colablog.mapper.ArticleMapper;
 import com.cola.colablog.pojo.Article;
 import com.cola.colablog.pojo.ArticleBody;
+import com.cola.colablog.pojo.SysUser;
 import com.cola.colablog.service.ArticleService;
 import com.cola.colablog.service.CategoryService;
 import com.cola.colablog.service.SysUserService;
@@ -15,6 +16,7 @@ import com.cola.colablog.service.TagService;
 import com.cola.colablog.vo.ArticleBodyVo;
 import com.cola.colablog.vo.ArticleVo;
 import com.cola.colablog.vo.Result;
+import com.cola.colablog.vo.UserVo;
 import com.cola.colablog.vo.params.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -95,6 +97,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
          * 2. 根据bodyId和categoryid 去做关联查询
          */
         Article article = this.articleMapper.selectById(articleId);
+        //浏览量+1
+        article.setViewCounts(article.getViewCounts()+1);
+        articleMapper.updateById(article);
         ArticleVo articleVo = copy(article);//一篇，copy便可
         return Result.success(articleVo);
     }
@@ -115,7 +120,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //时间类型也不用，用joda处理时间,new出DateTime对象包住，是为了用joda的toString方法
         articleVo.setCreateDate(new DateTime(article.getCreateDate()).toString("YYYY年MM月dd日 HH:mm"));
         //这句仍然是单表查询
-        articleVo.setAuthor(sysUserService.findUserById(article.getAuthorId()).getNickname());
+        SysUser user = sysUserService.findUserById(article.getAuthorId());
+        UserVo userVo=new UserVo();
+        BeanUtils.copyProperties(user,userVo);
+        articleVo.setAuthor(userVo);
         articleVo.setTags(tagService.findTagsByArticleId(article.getId()));
 
         Integer bodyId = article.getBodyId();

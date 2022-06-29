@@ -26,7 +26,7 @@ public class ArticleVo {
     //创建时间
     private String createDate;
 
-    private String author;
+    private UserVo author;
     //实体类没有标签的属性，vo层可以封装，多表查询得到。
     private List<TagVo> tags;
 
