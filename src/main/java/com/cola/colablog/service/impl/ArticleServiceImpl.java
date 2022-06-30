@@ -1,22 +1,25 @@
 package com.cola.colablog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cola.colablog.dos.Archives;
 import com.cola.colablog.mapper.ArticleBodyMapper;
 import com.cola.colablog.mapper.ArticleMapper;
+import com.cola.colablog.mapper.ArticleTagMapper;
 import com.cola.colablog.pojo.Article;
 import com.cola.colablog.pojo.ArticleBody;
+import com.cola.colablog.pojo.ArticleTag;
 import com.cola.colablog.pojo.SysUser;
 import com.cola.colablog.service.ArticleService;
 import com.cola.colablog.service.CategoryService;
 import com.cola.colablog.service.SysUserService;
 import com.cola.colablog.service.TagService;
-import com.cola.colablog.vo.ArticleBodyVo;
-import com.cola.colablog.vo.ArticleVo;
-import com.cola.colablog.vo.Result;
-import com.cola.colablog.vo.UserVo;
+import com.cola.colablog.utils.UserThreadLocal;
+import com.cola.colablog.vo.*;
+import com.cola.colablog.vo.params.ArticleParam;
 import com.cola.colablog.vo.params.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author cola
@@ -140,6 +145,87 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleBodyVo articleBodyVo = new ArticleBodyVo();
         articleBodyVo.setContent(articleBody.getContent());
         return articleBodyVo;
+    }
+
+    // 发布文章
+    @Autowired
+    private ArticleTagMapper articleTagMapper;
+    @Override
+    public Result publish(ArticleParam articleParam) {
+        //此接口 要加入到登录拦截当中
+        //对发布文章进行拦截，如果登陆了就放行，就能得到当前用户
+        SysUser sysUser = UserThreadLocal.get();
+        /**
+         * 1. 发布文章 目的 构建Article对象
+         * 2. 作者id  当前的登录用户
+         * 3. 标签  要将标签加入到 关联列表当中
+         * 4. body 内容存储 article bodyId
+         */
+        Article article = new Article();
+        boolean isEdit = false;
+        if (articleParam.getId() != null){
+            article = new Article();
+            article.setId(articleParam.getId());
+            article.setTitle(articleParam.getTitle());
+            article.setSummary(articleParam.getSummary());
+            article.setCategoryId(Integer.parseInt(articleParam.getCategory().getId()));
+            articleMapper.updateById(article);
+            isEdit = true;
+        }else{
+            article = new Article();
+            article.setAuthorId(sysUser.getId());
+            article.setWeight(0);
+            article.setViewCounts(0);
+            article.setTitle(articleParam.getTitle());
+            article.setSummary(articleParam.getSummary());
+            article.setCommentCounts(0);
+            article.setCreateDate(System.currentTimeMillis());
+            article.setCategoryId(Integer.parseInt(articleParam.getCategory().getId()));
+            //插入之后 会生成一个文章id
+            this.articleMapper.insert(article);
+        }
+        //tag
+        List<TagVo> tags = articleParam.getTags();
+        if (tags != null){
+            for (TagVo tag : tags) {
+                Integer articleId = article.getId();
+                if (isEdit){
+                    //先删除
+                    LambdaQueryWrapper<ArticleTag> queryWrapper = Wrappers.lambdaQuery();
+                    queryWrapper.eq(ArticleTag::getArticleId,articleId);
+                    articleTagMapper.delete(queryWrapper);
+                }
+                ArticleTag articleTag = new ArticleTag();
+//                此处！！！
+                articleTag.setTagId(tag.getId());
+
+                articleTag.setArticleId(articleId);
+                articleTagMapper.insert(articleTag);
+            }
+        }
+        //body
+        if (isEdit){
+            ArticleBody articleBody = new ArticleBody();
+            articleBody.setArticleId(article.getId());
+            articleBody.setContent(articleParam.getBody().getContent());
+            articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+            LambdaUpdateWrapper<ArticleBody> updateWrapper = Wrappers.lambdaUpdate();
+            updateWrapper.eq(ArticleBody::getArticleId,article.getId());
+            articleBodyMapper.update(articleBody, updateWrapper);
+        }else {
+            ArticleBody articleBody = new ArticleBody();
+            articleBody.setArticleId(article.getId());
+            articleBody.setContent(articleParam.getBody().getContent());
+            articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+            articleBodyMapper.insert(articleBody);
+
+            article.setBodyId(articleBody.getId());
+            articleMapper.updateById(article);
+        }
+        Map<String,String> map = new HashMap<>();
+        map.put("id",article.getId().toString());
+
+        return Result.success(map);
     }
 }
 

@@ -19,7 +19,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //允许8080端口访问我们后端服务器
-        registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+        registry.addMapping("/**").allowedOrigins("http://localhost:81");
     }
 
     @Override

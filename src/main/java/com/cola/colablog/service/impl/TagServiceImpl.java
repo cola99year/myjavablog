@@ -1,5 +1,6 @@
 package com.cola.colablog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.cola.colablog.mapper.TagMapper;
 import com.cola.colablog.pojo.Tag;
 import com.cola.colablog.service.TagService;
@@ -39,6 +40,27 @@ public class TagServiceImpl implements TagService {
         List<Tag> hotTagsName = tagMapper.selectHotTags(hotTagsIds);
         return Result.success(hotTagsName);
     }
+
+    @Override
+    public Result findAll() {
+        List<Tag> tags = tagMapper.selectList(null);
+        return Result.success(copyList(tags));
+    }
+
+    @Override
+    public Result findAllDetail() {
+        LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
+        List<Tag> tags = this.tagMapper.selectList(queryWrapper);
+        return Result.success(copyList(tags));
+    }
+
+    @Override
+    public Result findDetailById(Long id) {
+        Tag tag = tagMapper.selectById(id);
+        return Result.success(copy(tag));
+    }
+
+
 
     private List<TagVo> copyList(List<Tag> tags){
         List<TagVo> tagVoList = new ArrayList<>();

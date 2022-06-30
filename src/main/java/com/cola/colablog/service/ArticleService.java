@@ -3,6 +3,7 @@ package com.cola.colablog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cola.colablog.pojo.Article;
 import com.cola.colablog.vo.Result;
+import com.cola.colablog.vo.params.ArticleParam;
 import com.cola.colablog.vo.params.PageParams;
 
 /**
@@ -23,4 +24,6 @@ public interface ArticleService extends IService<Article> {
 
     //文章详情
     Result findArticleById(Integer articleId);
+
+    Result publish(ArticleParam articleParam);
 }

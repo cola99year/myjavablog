@@ -9,6 +9,6 @@ import lombok.Data;
 @Data
 public class TagVo {
     //因为tag实体类有头像，因此也封装一份vo层
-    private Long id;
+    private Integer id;
     private String tagName;
 }

@@ -13,4 +13,10 @@ import java.util.List;
 public interface TagService {
     List<TagVo> findTagsByArticleId(Integer id);
     Result hotTag(Integer limit);
+
+    Result findAll();
+
+    Result findAllDetail();
+
+    Result findDetailById(Long id);
 }
