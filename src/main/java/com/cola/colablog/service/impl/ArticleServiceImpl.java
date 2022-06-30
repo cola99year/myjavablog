@@ -164,7 +164,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Article article = new Article();
         boolean isEdit = false;
         if (articleParam.getId() != null){
-            article = new Article();
+            //article = new Article();
             article.setId(articleParam.getId());
             article.setTitle(articleParam.getTitle());
             article.setSummary(articleParam.getSummary());

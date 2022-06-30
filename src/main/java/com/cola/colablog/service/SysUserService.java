@@ -3,7 +3,6 @@ package com.cola.colablog.service;
 import com.cola.colablog.pojo.SysUser;
 import com.cola.colablog.vo.Result;
 import com.cola.colablog.vo.UserVo;
-import netscape.security.Principal;
 
 /**
  * @Author: cola99year

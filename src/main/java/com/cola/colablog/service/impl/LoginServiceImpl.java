@@ -64,7 +64,7 @@ public class LoginServiceImpl implements LoginService {
 
         //key为"token"+token,value为sysUser
         //redis的String类型，调用fastjson把sysUser对象由JSON转成String，保存到redis。过期时间为1分钟
-        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 1, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 10, TimeUnit.MINUTES);
         return Result.success(token);
     }
 
